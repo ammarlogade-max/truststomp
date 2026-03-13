@@ -6,12 +6,13 @@ import LoanApplication from "@/lib/models/LoanApplication";
 // PATCH — lender approves or rejects an application
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth();
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    const { id } = await params;
     const body = await req.json();
     const { status, lenderNote } = body;
 
@@ -22,7 +23,7 @@ export async function PATCH(
     await connectDB();
 
     const application = await LoanApplication.findByIdAndUpdate(
-      params.id,
+      id,
       {
         status,
         lenderNote: lenderNote || "",
