@@ -71,11 +71,13 @@ function ScoreGauge({ score, color }: { score: number; color: string }) {
 export default function ScorePage() {
   const router = useRouter();
   const [result, setResult] = useState<ScoreResult | null>(null);
+const [assessmentId, setAssessmentId] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("trustscore_result");
     if (!stored) { router.push("/onboarding"); return; }
     setResult(JSON.parse(stored));
+    setAssessmentId(sessionStorage.getItem("trustscore_id"));
   }, [router]);
 
   if (!result) return (
@@ -247,6 +249,22 @@ export default function ScorePage() {
             Re-assess
           </Link>
         </div>
+
+        {/* Apply for loan CTA */}
+        {result.riskTier !== "HIGH_RISK" && assessmentId && (
+          <div className="mt-4 p-5 glass-card border border-emerald-500/15 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <p className="text-white font-body font-medium text-sm">Ready to apply for a loan?</p>
+              <p className="text-white/40 font-body text-xs mt-0.5">Your Trust Score qualifies you — submit an application for lender review.</p>
+            </div>
+            <Link
+              href={`/apply?id=${assessmentId}`}
+              className="btn-primary whitespace-nowrap inline-flex items-center gap-2 text-sm py-2.5 px-5"
+            >
+              Apply for Loan <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
