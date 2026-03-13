@@ -160,7 +160,7 @@ export default function OnboardingPage() {
     return true;
   };
 
-  const expRatio = form.monthlyIncome && form.monthlyExpenses
+  const expRatio = form.monthlyIncome && form.monthlyExpenses && n(form.monthlyIncome) > 0
     ? n(form.monthlyExpenses) / n(form.monthlyIncome) : 0;
 
   // ── CHOOSE MODE SCREEN ──
@@ -347,21 +347,10 @@ export default function OnboardingPage() {
                 </div>
                 <div>
                   <label className="label-text">Months of History</label>
-                  <select
-  className="input-field"
-  value={form.monthsOfHistory}
-  onChange={e => {
-    set("monthsOfHistory", e.target.value);
-    setForm(f => ({ ...f, monthlyData: generateMonths(parseInt(e.target.value)) }));
-  }}
-  style={{
-    colorScheme: "dark",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    color: "white",
-  }}
->
-  {[3,6,9,12,18,24].map(n => <option key={n} value={n} style={{ backgroundColor: "#1e293b", color: "white" }}>{n} months</option>)}
-</select>
+                  <select className="input-field" value={form.monthsOfHistory}
+                    onChange={e => { set("monthsOfHistory", e.target.value); setForm(f => ({ ...f, monthlyData: generateMonths(parseInt(e.target.value)) })); }}>
+                    {[3,6,9,12,18,24].map(n => <option key={n} value={n}>{n} months</option>)}
+                  </select>
                 </div>
               </div>
               {expRatio > 0 && (
